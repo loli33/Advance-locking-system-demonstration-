@@ -1,0 +1,105 @@
+import RPi.GPIO as GPIO																							#SERVO - 10
+from time import sleep																							#LED - RED:18 GREEN:32
+from KPLIB import keypad
+import Adafruit_CharLCD as LCD
+
+
+
+GPIO.setmode(GPIO.BCM)
+
+GPIO.setup(15,GPIO.OUT)
+led_red = 24
+led_green = 23
+GPIO.setup(led_red,GPIO.OUT)
+GPIO.setup(led_green,GPIO.OUT)
+
+
+
+pwm = GPIO.PWM(15,50)
+myPad = keypad(retChar = 'D')    #D - Enter
+
+GPIO.setup(18,GPIO.IN , pull_up_down = GPIO.PUD_DOWN)
+
+#LCD DISPLAY
+GPIO.setmode(GPIO.BCM)
+rs=20
+en=16
+d4=12
+d5=7
+d6=8
+d7=25
+lcd=LCD.Adafruit_CharLCD(rs,en,d4,d5,d6,d7,16,2)
+
+sleep(.7)
+pwm.start(0)
+
+
+def lcd_print(msg):
+    lcd.clear()
+    lcd.message(msg)
+
+while True:
+    retry_count = 0					#Side stand anchors
+    sleep(.7)
+    pwm.ChangeDutyCycle(2)
+    sleep(.7)
+      
+    while GPIO.input(18) != GPIO.HIGH:   #2 Way key switch
+        GPIO.output(led_red,GPIO.HIGH)
+        sleep(.3)
+
+    while True:
+
+        if retry_count == 3:
+            print('Try 5 sec later') 	#Maximum 3 attempts
+            lcd_print("Try 5 sec later")
+            sleep(.7)
+            GPIO.output(led_red,GPIO.HIGH)
+            retry_count = 0
+            
+        if retry_count == 0:
+            print('Enter PIN')
+            lcd_print("ENTER PIN")
+            sleep(.2)
+        else:
+            print('Enter crt PIN')
+            lcd_print("ENTERCRTPIN")
+            sleep(.2)
+
+        pin = myPad.readKeypad()
+        print(pin)
+
+        if pin=="#39":					#PIN 
+            print('Ignition ON')
+            GPIO.output(led_green,GPIO.HIGH)
+            pwm.ChangeDutyCycle(8)		#Side stand retards
+            sleep(.7)
+            
+            print('Good to go')
+            lcd_print("Ignition ON\nGood to go")
+            while GPIO.input(18) == GPIO.HIGH:
+                sleep(.3)
+            
+            pwm.ChangeDutyCycle(2)
+            sleep(.7)
+            print('Ignition OFF')
+            lcd_print("Ignition OFF")
+            print('', end='')
+            GPIO.output(led_red,GPIO.HIGH)
+            break
+        
+        elif pin == "456":
+            pwm.stop()
+            sleep(.7)
+            lcd.clear()
+            exit(0)
+            
+        retry_count += 1
+        
+                                 
+      
+sleep(.7)
+pwm.stop()
+
+    
+

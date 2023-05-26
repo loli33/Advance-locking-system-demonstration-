@@ -4,6 +4,7 @@ Here the files and code for the project demonstration of advanced locking system
 ----------------------------------------
 Raspberry pi 3 Model B
 I have attached the code for this project
+Download the required library
 -----------------------------------------
 
 PROJECT DESCRIPTION

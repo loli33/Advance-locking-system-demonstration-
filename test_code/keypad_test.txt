@@ -1,0 +1,6 @@
+import RPi.GPIO as GPIO
+from KPLIB import keypad
+myPad=keypad(retChar='A')
+PIN =myPad.readKeypad()
+print(myString)
+GPIO.cleanup()

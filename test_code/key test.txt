@@ -1,0 +1,14 @@
+import RPi.GPIO as GPIO
+from time import sleep
+
+# switch turn ON/OFF
+
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(12, GPIO.IN,pull_up_down = GPIO.PUD_DOWN)
+while(True):
+    if GPIO.input(12) == GPIO.HIGH:
+        print('on')
+        sleep(.2)
+    else:
+        print('off')
+        sleep(.2)

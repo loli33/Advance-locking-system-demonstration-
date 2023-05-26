@@ -1,0 +1,11 @@
+import Adafruit_CharLCD as LCD
+import RPi.GPIO as GPIO
+GPIO.setmode(GPIO.BCM)
+rs=20
+en=16
+d4=12
+d5=7
+d6=8
+d7=25
+lcd=LCD.Adafruit_CharLCD(rs,en,d4,d5,d6,d7,16,2)
+lcd.message("done")
